@@ -1,11 +1,20 @@
 {
   "name": "photo-lib-exif-fixer-script",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/index.js",
   "repository": "git@github.com:MLKiiwy/photo-lib-exif-fixer-script.git",
   "author": "Mikaël Labrut <labrut@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "commander": "^2.15.0"
+    "commander": "^2.15.0",
+    "filehound": "^1.16.2",
+    "fs-promise": "^2.0.3",
+    "jest": "^23.0.0-alpha.0",
+    "lodash": "^4.17.5",
+    "piexifjs": "^1.0.3"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
   }
 }
