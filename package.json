@@ -1,0 +1,11 @@
+{
+  "name": "photo-lib-exif-fixer-script",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:MLKiiwy/photo-lib-exif-fixer-script.git",
+  "author": "Mikaël Labrut <labrut@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.15.0"
+  }
+}
