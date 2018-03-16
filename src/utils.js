@@ -1,3 +1,8 @@
+const indexOf = require('lodash/indexOf');
+const replace = require('lodash/replace');
+const lowerCase = require('lodash/lowerCase');
+const { parse } = require('path');
+
 const extractDateFromDir = (name) => {
     const full = /([0-9]{4})-([0-9]{2})-([0-9]{2})+/
     const onlyYearAndMonth = /([0-9]{4})-([0-9]{2})+/
@@ -15,16 +20,23 @@ const extractDateFromDir = (name) => {
     return parts ? `${parts[1] ? parts[1] : '2017'}:${parts[2] ? parts[2] : '01'}:${parts[3] ? parts[3] : '01'} 00:00:00` : '';
 }
 
-const extractCleanPhotoNameFromDir = (dir) => {
-    return 'clean';
+const extractReadableNameFromDir = (dir) => {
+    const pos = indexOf(dir, ' ');
+    return pos ? dir.substr(pos + 1) : dir;
 }
 
-const extractReadableNameFromDir = (dir) => {
-    return 'readable';
+const extractCleanPhotoNameFromDir = (dir) => {
+    let name = extractReadableNameFromDir(dir);
+    name = lowerCase(name);
+    name = replace(name, 'é', 'e');
+    name = name.replace(/[^A-Za-z 0-9 \.,\?""!@#\$%\^&\*\(\)-_=\+;:<>\/\\\|\}\{\[\]`~]*/g, '');
+    return replace(name, ' ', '_');
 }
 
 const generateNewPhotoName = (photoPath, photoDir) => {
-    return 'photoName';
+    const clean = extractCleanPhotoNameFromDir(photoDir);
+    const { name } = parse(photoPath);
+    return `${clean}-${name}`;
 };
 
 module.exports = {

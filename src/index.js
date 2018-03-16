@@ -27,6 +27,7 @@ const main = async () => {
     try {
         process.stdout.write(`Reading : ${sourceDir} \n`);
         const directories = await Filehound.create().depth(1).paths(sourceDir).directory().find();
+        process.stdout.write(`Processing ${directories.length} directories \n`);
         each(directories, dir => {
             const photos = await Filehound.create().depth(0).paths(dir).ext(['.jpeg', '.JPG', '.JPEG', '.jpg']).find();
             process.stdout.write(`Processing ${photos.length} photos in : ${dir} content \n`);
