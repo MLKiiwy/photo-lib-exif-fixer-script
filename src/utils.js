@@ -2,6 +2,7 @@ const indexOf = require('lodash/indexOf');
 const replace = require('lodash/replace');
 const lowerCase = require('lodash/lowerCase');
 const { parse } = require('path');
+const snakeCase = require('lodash/snakeCase');
 
 const extractDateFromDir = (name) => {
     const full = /([0-9]{4})-([0-9]{2})-([0-9]{2})+/
@@ -30,7 +31,7 @@ const extractCleanPhotoNameFromDir = (dir) => {
     name = lowerCase(name);
     name = replace(name, 'é', 'e');
     name = name.replace(/[^A-Za-z 0-9 \.,\?""!@#\$%\^&\*\(\)-_=\+;:<>\/\\\|\}\{\[\]`~]*/g, '');
-    return replace(name, ' ', '_');
+    return snakeCase(name);
 }
 
 const generateNewPhotoName = (photoPath, photoDir) => {

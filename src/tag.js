@@ -8,22 +8,27 @@ const tag = async (photoPath, photoDir, targetDir) => {
     const name = extractReadableNameFromDir(photoDir);
     const cleanName = extractCleanPhotoNameFromDir(photoDir);
 
-    if (!exifData[piexif.ExifIFD.DateTimeOriginal]) {
-        exifData[piexif.ExifIFD.DateTimeOriginal] = extractDateFromDir(photoDir);
+
+    if (!exifData['Exif'][exif.ExifIFD.DateTimeOriginal]) {
+        console.log('set date :', extractDateFromDir(photoDir));
+        exifData['Exif'][exif.ExifIFD.DateTimeOriginal] = extractDateFromDir(photoDir);
+    }
+    console.log(exif.ExifIFD.DateTimeOriginal);
+
+    if (!exifData['Exif'][exif.ExifIFD.UserComment]) {
+        exifData['Exif'][exif.ExifIFD.UserComment] = cleanName;
     }
 
-    if (!exifData[piexif.ExifIFD.UserComment]) {
-        exifData[piexif.ExifIFD.UserComment] = cleanName;
+    if (!exifData['Exif'][exif.ExifIFD.MakerNote]) {
+        exifData['Exif'][exif.ExifIFD.MakerNote] = name;
     }
 
-    if (!exifData[piexif.ExifIFD.MakerNote]) {
-        exifData[piexif.ExifIFD.MakerNote] = name;
+    if (!exifData[exif.ImageIFD.ImageDescription]) {
+        exifData[exif.ImageIFD.ImageDescription] = name;
     }
 
-    if (!exifData[piexif.ImageIFD.ImageDescription]) {
-        exifData[piexif.ImageIFD.ImageDescription] = name;
-    }
 
+//    const exifObj = {"0th":zeroth, "Exif":exif, "GPS":gps};
     const newPhotoName = generateNewPhotoName(photoPath, photoDir);
     const newPhotoContent = exif.insert(exif.dump(exifData), photoContent);
     return fs.writeFile(`${targetDir}/${newPhotoName}.jpg`, new Buffer(newPhotoContent, 'binary'));

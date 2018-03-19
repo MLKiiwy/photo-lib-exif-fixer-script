@@ -5,6 +5,7 @@ const fs = require('fs-promise');
 const path = require('path');
 const Filehound = require('filehound');
 const { tag } = require('./tag');
+const Promise = require('bluebird');
 
 let sourceDir;
 let targetDir;
@@ -28,7 +29,7 @@ const main = async () => {
         process.stdout.write(`Reading : ${sourceDir} \n`);
         const directories = await Filehound.create().depth(1).paths(sourceDir).directory().find();
         process.stdout.write(`Processing ${directories.length} directories \n`);
-        each(directories, dir => {
+        await Promise.each(directories, async dir => {
             const photos = await Filehound.create().depth(0).paths(dir).ext(['.jpeg', '.JPG', '.JPEG', '.jpg']).find();
             process.stdout.write(`Processing ${photos.length} photos in : ${dir} content \n`);
             await Promise.all(photos.map(photo => tag(photo, dir, targetDir)));

@@ -56,6 +56,7 @@ describe('utils', () => {
         it('generate photo name from dir', () => {
             const cases = [
                 { input: ['/path/to/PSCN1522.JPG', '2007-12-07 Soirée raclette'], output: 'soiree_raclette-PSCN1522' },
+                { input: ['/path/to/PSCN1522.JPG', '2007-12-07 Soirée raclette super longue'], output: 'soiree_raclette_super_longue-PSCN1522' },
             ];
 
             each(cases, ({ input, output }) => {
