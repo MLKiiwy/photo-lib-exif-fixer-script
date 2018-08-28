@@ -2,7 +2,7 @@ const { extractDateFromDir, extractCleanPhotoNameFromDir, extractReadableNameFro
 const exif = require('piexifjs');
 const fs = require('fs-promise');
 
-const tag = async (photoPath, photoDir, targetDir) => {
+const tagOld = async (photoPath, photoDir, targetDir) => {
     const photoContent = await fs.readFile(photoPath, 'binary');
     let exifData = exif.load(photoContent);
     const name = extractReadableNameFromDir(photoDir);
@@ -28,10 +28,33 @@ const tag = async (photoPath, photoDir, targetDir) => {
     }
 
 
-//    const exifObj = {"0th":zeroth, "Exif":exif, "GPS":gps};
+    //    const exifObj = {"0th":zeroth, "Exif":exif, "GPS":gps};
     const newPhotoName = generateNewPhotoName(photoPath, photoDir);
     const newPhotoContent = exif.insert(exif.dump(exifData), photoContent);
     return fs.writeFile(`${targetDir}/${newPhotoName}.jpg`, new Buffer(newPhotoContent, 'binary'));
+}
+
+const tag = async (sourcePath, targetImagePath, newDate, name, cleanName) => {
+    const source = await fs.readFile(sourcePath, 'binary');
+    const exifData = exif.load(source);
+
+    if (!exifData['Exif'][exif.ExifIFD.DateTimeOriginal]) {
+        exifData['Exif'][exif.ExifIFD.DateTimeOriginal] = newDate;
+    }
+
+    if (!exifData['Exif'][exif.ExifIFD.UserComment]) {
+        exifData['Exif'][exif.ExifIFD.UserComment] = cleanName;
+    }
+
+    if (!exifData['Exif'][exif.ExifIFD.MakerNote]) {
+        exifData['Exif'][exif.ExifIFD.MakerNote] = name;
+    }
+
+    if (!exifData[exif.ImageIFD.ImageDescription]) {
+        exifData[exif.ImageIFD.ImageDescription] = name;
+    }
+
+    return fs.writeFile(targetImagePath, new Buffer(exif.insert(exif.dump(exifData), source), 'binary'));
 }
 
 module.exports = {

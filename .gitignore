@@ -4,3 +4,5 @@ newrelic_agent.log
 config/default.json
 config/local.json
 coverage
+!test/result/.gitkeep
+test/result/*
