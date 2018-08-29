@@ -40,9 +40,12 @@ const generateNewPhotoName = (photoPath, photoDir) => {
     return `${clean}-${name}`;
 };
 
+const formatDate = moment => moment.format('YYYY:MM:DD HH:mm:SS');
+
 module.exports = {
     extractDateFromDir,
     extractCleanPhotoNameFromDir,
     extractReadableNameFromDir,
     generateNewPhotoName,
+    formatDate
 }

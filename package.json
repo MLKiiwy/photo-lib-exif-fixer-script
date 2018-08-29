@@ -11,8 +11,9 @@
     "exifreader": "^2.5.0",
     "filehound": "^1.16.2",
     "fs-promise": "^2.0.3",
-    "jest": "^22.4.2",
+    "jest": "^23.5.0",
     "lodash": "^4.17.5",
+    "moment": "^2.22.2",
     "piexifjs": "^1.0.3"
   },
   "scripts": {
