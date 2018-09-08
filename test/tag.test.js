@@ -1,7 +1,7 @@
 'use strict';
 
 const { resolve } = require('path');
-const { tag } = require('../src/tag');
+const tag = require('../src/tag');
 const reader = require('./reader');
 const moment = require('moment');
 
@@ -176,6 +176,15 @@ describe('tag', () => {
                     ],
                 },
             });
+        });
+    });
+
+    describe('image with a good descrption read by google photo', () => {
+        const imagePath = resolve(__dirname, 'images/empty_with_description.jpg');
+
+        it.only('write new dates, name and clean name because date is before 1999 on image', async () => {
+            // await tag(emptyImagePath, targetImagePath, newDate, name, cleanName);
+            const newValues = await reader(imagePath);
         });
     });
 });

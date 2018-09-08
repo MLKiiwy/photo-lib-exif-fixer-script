@@ -1,6 +1,7 @@
 const { formatDate } = require('./utils');
 const exif = require('piexifjs');
 const fs = require('fs-promise');
+const fsExtra = require('fs-extra');
 const moment = require('moment');
 
 const tag = async (sourcePath, targetImagePath, newDate, name, cleanName) => {
@@ -22,9 +23,7 @@ const tag = async (sourcePath, targetImagePath, newDate, name, cleanName) => {
         exifData['0th'][exif.ImageIFD.ImageDescription] = name;
     }
 
-    return fs.writeFile(targetImagePath, new Buffer(exif.insert(exif.dump(exifData), source), 'binary'));
+    return fsExtra.outputFile(targetImagePath, new Buffer(exif.insert(exif.dump(exifData), source), 'binary'));
 }
 
-module.exports = {
-    tag,
-}
+module.exports = tag;
