@@ -2,7 +2,7 @@ const Filehound = require("filehound");
 const Promise = require("bluebird");
 const moment = require("moment");
 const path = require("path");
-const fsExtra = require("fs-extra");
+const exiftoolBin = require("dist-exiftool");
 const exiftool = require("node-exiftool");
 const {
   extractDateFromDir,
@@ -20,8 +20,8 @@ module.exports = async (sourceDir, targetDir) => {
     .paths(fullSourceDir)
     .directory()
     .find();
-  const ep = new exiftool.ExiftoolProcess();
-  
+  const ep = new exiftool.ExiftoolProcess(exiftoolBin);
+
   try {
     await ep.open();
     process.stdout.write(`Processing ${directories.length} directories \n`);
@@ -79,8 +79,7 @@ module.exports = async (sourceDir, targetDir) => {
             dirname,
             video
           );
-          // Just a simple copy
-          return fsExtra.copy(video, targetPath);
+          return tag(ep, video, targetPath, date, readableName, cleanName);
         })
       );
 
