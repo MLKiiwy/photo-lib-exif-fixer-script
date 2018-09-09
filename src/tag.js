@@ -1,29 +1,21 @@
 const { formatDate } = require('./utils');
-const exif = require('piexifjs');
-const fs = require('fs-promise');
 const fsExtra = require('fs-extra');
 const moment = require('moment');
 
-const tag = async (sourcePath, targetImagePath, newDate, name, cleanName) => {
-    const source = await fs.readFile(sourcePath, 'binary');
-    const exifData = exif.load(source);
+const tag = async (ep, sourcePath, targetImagePath, newDate, name, cleanName) => {
+    const data = await ep.readMetadata(sourcePath, ['-File:all'])
+    const metadata = (data && data.data[0]) || {};
+    const newMetadata = {};
 
-    const existing = exifData['Exif'][exif.ExifIFD.DateTimeDigitized] || exifData['Exif'][exif.ExifIFD.DateTimeOriginal] || exifData['Exif'][exif.ExifIFD.DateTime] || null;
+    const existing = metadata.DateTimeOriginal || null;
     const dateToApply = existing !== null && moment(existing, 'YYYY:MM:DD HH:mm:ss').isAfter('1999-01-01') ? formatDate(moment(existing, 'YYYY:MM:DD HH:mm:ss')) : formatDate(newDate);
 
-    exifData['Exif'][exif.ExifIFD.DateTimeDigitized] = dateToApply;
-    exifData['Exif'][exif.ExifIFD.DateTimeOriginal] = dateToApply;
-    exifData['0th'][exif.ImageIFD.DateTime] = dateToApply;
+    newMetadata.DateTimeOriginal = dateToApply;
+    newMetadata.UserComment = metadata.UserComment || cleanName;
+    newMetadata['Caption-Abstract'] = `${ metadata['Caption-Abstract'] || metadata.ImageDescription || ''}|ALBUM|${name}|`;
 
-    if (!exifData['Exif'][exif.ExifIFD.UserComment]) {
-        exifData['Exif'][exif.ExifIFD.UserComment] = cleanName;
-    }
-
-    if (!exifData['0th'][exif.ImageIFD.ImageDescription]) {
-        exifData['0th'][exif.ImageIFD.ImageDescription] = name;
-    }
-
-    return fsExtra.outputFile(targetImagePath, new Buffer(exif.insert(exif.dump(exifData), source), 'binary'));
+    await fsExtra.copy(sourcePath, targetImagePath);
+    return ep.writeMetadata(targetImagePath, newMetadata, ['overwrite_original']);
 }
 
 module.exports = tag;
