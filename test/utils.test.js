@@ -13,6 +13,7 @@ describe('utils', () => {
                 { input: '2004 IUT', output: '2004:01:01 00:00:00' },
                 { input: '2011-05', output: '2011:05:01 00:00:00' },
                 { input: '2015 PC -KL-', output: '2015:01:01 00:00:00' },
+                { input: '2015-2020 PC -KL-', output: '2015:20:01 00:00:00' },
             ];
 
             each(cases, ({ input, output }) => {

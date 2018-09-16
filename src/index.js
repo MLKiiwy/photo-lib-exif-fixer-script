@@ -23,6 +23,7 @@ if (typeof sourceDir === 'undefined' || typeof targetDir === 'undefined') {
 
 const main = async () => {
     try {
+        process.setMaxListeners(0);
         process.stdout.write(`Reading : ${sourceDir} \n`);
         await replicate(sourceDir, targetDir);
     } catch (e) {
